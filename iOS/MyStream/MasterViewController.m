@@ -7,8 +7,8 @@
 //
 
 #import "MasterViewController.h"
-
 #import "DetailViewController.h"
+#import "BrowseSlaveViewController.h"
 
 @interface MasterViewController () {
     NSMutableArray *_objects;
@@ -28,12 +28,6 @@
     return self;
 }
 							
-- (void)dealloc
-{
-    [_detailViewController release];
-    [_objects release];
-    [super dealloc];
-}
 
 - (void)viewDidLoad
 {
@@ -41,7 +35,7 @@
 	// Do any additional setup after loading the view, typically from a nib.
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    UIBarButtonItem *addButton = [[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)] autorelease];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
 }
 
@@ -75,7 +69,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _objects.count;
+    return 2;
 }
 
 // Customize the appearance of table view cells.
@@ -85,20 +79,23 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+    
+    if (indexPath.row==0) 
+        cell.textLabel.text = @"Be Master";
+    else {
+        cell.textLabel.text = @"Be Slave";
+    }
 
-
-    NSDate *object = [_objects objectAtIndex:indexPath.row];
-    cell.textLabel.text = [object description];
     return cell;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Return NO if you do not want the specified item to be editable.
-    return YES;
+    return NO;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -129,12 +126,18 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (indexPath.row==0) {
+        BrowseSlaveViewController* controller = [[BrowseSlaveViewController alloc] initWithNibName:@"BrowseSlaveViewController" bundle:nil];
+        [self.navigationController pushViewController:controller animated:YES];
+    }
+    /*
     if (!self.detailViewController) {
         self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController" bundle:nil] autorelease];
     }
     NSDate *object = [_objects objectAtIndex:indexPath.row];
     self.detailViewController.detailItem = object;
     [self.navigationController pushViewController:self.detailViewController animated:YES];
+     */
 }
 
 @end
